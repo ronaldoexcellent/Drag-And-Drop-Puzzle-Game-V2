@@ -1,0 +1,481 @@
+<!-- Dr. Impulse's Web Game Rule -->
+<!-- Begin Game Style -->
+<style>
+    [data-role='game'] {
+        background-color: rgb(194, 48, 3);
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        display: grid;
+        /* justify-content: center;
+        align-items: center; */
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        user-select: none;
+    }
+    [data-role='game']::-webkit-scrollbar {
+        display: block;
+        background: purple;
+    }
+    [data-role='game']::-webkit-scrollbar-thumb {
+        background: rgb(44, 0, 44);
+    }
+</style>
+<!-- End Game Style -->
+
+<!-- Start Game Building -->
+<section::game data-role="game" draggable="false" onContextMenu="return false" ondblclick="window.open('index.html', '_self')">
+    <!-- Game Title -->
+    <title>Tiling Puzzle By Ronaldo Excellent</title>
+
+    <!-- Game Style -->
+    <page::style />
+        <style>
+            #notification {
+                background: rgb(255, 0, 221);
+                width: 100%;
+                padding: 1.3%;
+                margin: 0 auto;
+                position: relative;
+                font-size: 1.7em;
+                font-weight: 700;
+                color: white;
+            }
+
+            #notification2 {
+                background: rgba(245, 245, 245, 0.3);
+                width: 100%;
+                margin: 0 auto;
+                position: relative;
+                margin-bottom: 8px;
+                text-align: center;
+            }
+
+            #showImage {
+                font-size: 1.2em;
+                font-weight: 700;
+                color: white;
+                text-shadow: 2px 2px 2px black;
+                padding: 3%;
+            }
+
+            #full-image, #dark-transparent {
+                position: fixed;
+                display: flex;
+                justify-content: center;
+                align-items: center; 
+                background: white;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 0;
+                z-index: 100;
+                overflow: scroll;
+                transform: scale(0);
+                transition: 1s;
+            }
+
+            #dark-transparent {
+                z-index: 300;
+                opacity: 0;
+                background: black;
+                transform: scale(1);
+                overflow: hidden;
+                display: none;
+                transition: 2s;
+            }
+
+            #canvas, #second-row {
+                background-color: rgba(250, 250, 250, 0.3);
+                display: grid;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+                position: relative;
+                box-shadow: 3px 3px 3px grey;
+                border-radius: 18px;
+                padding: 3%;
+                user-select: none;
+                width: 100%;
+            }
+
+            @keyframes blink {
+                from {
+                    background: white;
+                    color: #000000;
+                }
+                to {
+                    background: #00dd00;
+                    color: #ffffff;
+                }
+            }
+
+            .row, .nxtrow {
+                display: inline-flex;
+                color: white;
+                width: 100%;
+                font-weight: bolder;
+                margin: 0px auto;
+            }
+
+            @keyframes slide {
+                from {
+                    transform: translateX(0);
+                }
+                50% {
+                    transform: translateX(20%);
+                }
+                75% {
+                    transform: translateX(-20%);
+                }
+                to {
+                    transform: translateX(0);
+                }
+            }
+
+            .tile-block, .TB {
+                border: 0;
+                background-color: #000000;
+                width: 100px;
+                height: 100px;
+                margin: 0px auto;
+                cursor: pointer;
+            }
+
+            .TB {
+                border: 3px solid rgb(255, 220, 20);
+            }
+
+            .first-row {
+                animation: 1s first-row;
+            }
+
+            .second-row {
+                animation: 2s second-row;
+            }
+
+            .third-row {
+                animation: 3s third-row;
+            }
+
+            .fourth-row {
+                animation: 4s fourth-row;
+            }
+            
+            @keyframes first-row {
+                from {
+                    transform: translateY(-100%);
+                }
+                to {
+                    transform: translateY(100%);
+                }
+            }
+
+            @keyframes second-row {
+                from {
+                    transform: translateX(-100%);
+                }
+                to {
+                    transform: translateX(100%);
+                }
+            }
+
+            @keyframes third-row {
+                from {
+                    transform: translateX(100%);
+                }
+                to {
+                    transform: translateX(-100%);
+                }
+            }
+
+            @keyframes fourth-row {
+                from {
+                    transform: translateY(100%);
+                }
+                to {
+                    transform: translateY(-100%);
+                }
+            }
+        </style>
+        <!-- End Style -->
+
+
+    <page::content />
+        <p id="notification" align="center">Drag & Drop!</p>
+        <p id="notification2">
+            <button id="showImage" onclick="document.getElementById('full-image').style.transform = 'scale(1)'">See Image</button>
+        </p>
+        <aside id="dark-transparent" onclick="window.open('index.html', '_self')" ondblclick="window.open('../Tiles 2/index.html', '_self')"></aside>
+
+        <aside id="full-image">
+            <button style="position: absolute; color:#fd0000; font-weight: bolder; text-shadow: 1px 1px 2px black; font-size: x-large; cursor: pointer; padding: 1%; top: 0; left: 0;" onclick="document.getElementById('full-image').style.transform = 'scale(0)'"> &times; Close </button>
+            <img src="main.png" />
+        </aside>
+
+        <article class="row">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <section id="canvas">
+
+                <section class="row row1">
+                    <article class="tile-block">
+                    </article>
+
+                    <article class="tile-block">
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+                </section>
+
+                <section class="row row2">
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+                </section>
+
+                <section class="row row1">
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+                </section>
+
+                <section class="row row2">
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+
+                    <article class="tile-block">
+                        <main class="tiles"></main>
+                    </article>
+                </section>
+
+            </section>
+            &nbsp;&nbsp;&nbsp;
+            <hr />
+            &nbsp;&nbsp;&nbsp;
+            <section id="second-row">
+                <main class="nxtrow">
+                    <div class="tile-block TB first-row"></div>
+
+                    <div class="tile-block TB second-row"></div>
+
+                    <div class="tile-block TB third-row"></div>
+
+                    <div class="tile-block TB fourth-row"></div>
+                </main>
+
+                <main class="nxtrow">
+                    <div class="tile-block TB first-row"></div>
+
+                    <div class="tile-block TB second-row"></div>
+
+                    <div class="tile-block TB third-row"></div>
+
+                    <div class="tile-block TB fourth-row"></div>
+                </main>
+
+                <main class="nxtrow">
+                    <div class="tile-block TB first-row"></div>
+
+                    <div class="tile-block TB second-row"></div>
+
+                    <div class="tile-block TB third-row"></div>
+
+                    <div class="tile-block TB fourth-row"></div>
+                </main>
+
+                <main class="nxtrow">
+                    <div class="tile-block TB first-row"></div>
+
+                    <div class="tile-block TB second-row"></div>
+
+                    <div class="tile-block TB third-row"></div>
+
+                    <div class="tile-block TB fourth-row"></div>
+                </main>
+            </section>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </article>
+
+        <!-- End Main -->
+
+    <page::engine />
+        <script>
+            try {
+                start();
+                
+                function start() {
+                    // confirm game startup || javascript support
+                    alert('Javascript Support Confirmed');
+
+                    $cnv = document.querySelector("[data-role='game']");
+                    $t = document.getElementsByClassName('tiles');
+                    $tb = document.getElementsByClassName('tile-block');
+                    $d = document.getElementById('notification');
+                    $dt = document.getElementById('dark-transparent');
+                    $tF = [document.getElementById('takeFrom1'), document.getElementById('takeFrom2'), document.getElementById('takeFrom3'), document.getElementById('takeFrom4'), document.getElementById('takeFrom5'), document.getElementById('takeFrom6'), document.getElementById('takeFrom7'), document.getElementById('takeFrom8'), document.getElementById('takeFrom9'), document.getElementById('takeFrom10'), document.getElementById('takeFrom11'), document.getElementById('takeFrom12'), document.getElementById('takeFrom13'), document.getElementById('takeFrom14'), document.getElementById('takeFrom15'), document.getElementById('takeFrom16')];
+                    $rw1 = document.getElementsByClassName('row1');
+                    $rw2 = document.getElementsByClassName('row2');
+                    $tile_bank = ["url('001.png')", "url('002.png')", "url('003.png')", "url('004.png')", "url('005.png')", "url('006.png')", "url('007.png')", "url('008.png')", "url('009.png')", "url('010.png')", "url('011.png')", "url('012.png')", "url('013.png')", "url('014.png')", "url('015.png')", "url('016.png')"];
+
+                    _TB = document.getElementsByClassName('TB');
+                    
+                    $cnv.draggable = false;
+                    
+                    // autorun shuffle
+                    $start__shuffle = setInterval(function () {_shuffle();}, 500);
+
+                    // add equal features to all tiles
+                    for ($all = 0; $all < $tb.length; $all++) {
+                        $tb[$all].style.backgroundSize = "100% 100%";
+                        $tb[$all].style.backgroundRepeat = "no-repeat";
+                        $tb[$all].draggable = true;
+                        $tb[$all].ondragstart = function () {draggable(event)};
+                        $tb[$all].ondrag = function () {storeData(event); whileDrag()};
+                        $tb[$all].ondragend = function () {finish(event)};
+                        $tb[$all].ondragover = function () {unlock(event)};
+                        $tb[$all].ondragenter = function () {receive(event)};
+                        $tb[$all].ondrop = function () {accept(event)};
+                        $tb[$all].ondragleave = function () {end(event)};
+                    }
+
+                    // shuffle
+                    function _shuffle() {
+                        $sh1 = Math.floor(Math.random() * _TB.length);
+                        $tiba = $tile_bank.sort();
+                        $sh2 = Math.floor(Math.random() * $tiba.length);
+                        _TB[$sh1].style.backgroundImage = $tiba[$sh2];
+                        _TB[$sh1].className = "tile-block";
+                        $tile_bank.splice($tile_bank.indexOf($tile_bank[$sh2]), 1);
+
+                        (!$tile_bank.length > 0) ? clearInterval($start__shuffle) : null;
+                    }
+
+                    // drag
+                    function storeData(event) {
+                        $remnant = event.target.style.backgroundImage;
+                        sessionStorage.setItem('data', $remnant);
+                    }
+
+                    // dragstart
+                    function draggable(event) {
+                        (event.target.style.backgroundImage == "") ? $remnant = "" : 
+                        event.target.style.outline = "thick solid #ff0000";
+                        $cnv.style.backgroundImage = event.target.style.backgroundImage;
+                        $cnv.style.backgroundSize = "100% 100%";
+                        $cnv.style.backgroundRepeat = "no-repeat";
+                        $cnv.style.backgroundPosition = "center";
+                    }
+
+                    // drag
+                    function whileDrag() {
+                        $d.innerHTML = 'Dragging...';
+                        $d.style.background = "red";
+                    }
+                    
+                    // dragend
+                    function finish(event) {
+                        event.target.style.outline = "";
+                        $d.innerHTML = 'Dropped.';
+                        $d.style.background = "green";
+                        $rev = sessionStorage.getItem('reverse');
+                        
+                        ($rev == null) ? event.target.backgroundImage = event.target.backgroundImage : event.target.style.backgroundImage = $rev;
+                    }
+
+                    // dragover
+                    function unlock(event) {
+                        (sessionStorage.getItem('data') == "") ? null :
+                        event.preventDefault();
+                        $reverse_Data = event.target.style.backgroundImage;
+                        sessionStorage.setItem('reverse', $reverse_Data);
+                    }
+
+                    // dragenter
+                    function receive(event) {
+                        event.target.style.color = "rgb(0, 200, 0)";
+                        event.target.style.outline = "thick ridge";
+                    }
+
+                    // drop
+                    function accept(event) {
+                        $arr_t = ["001.png", "002.png", "003.png", "004.png", "005.png", "006.png", "007.png", "008.png", "009.png", "010.png", "011.png", "012.png", "013.png", "014.png", "015.png", "016.png"];
+
+                        $data = sessionStorage.getItem('data');
+                        event.target.style.backgroundImage = $data;
+                        event.target.style.outline = "";
+
+                        function win() {for (i = 0; i < $rw1.length; i++) {
+                                $rw1[i].style.animation = 'slide 2s';
+                                $rw2[i].style.animation = 'slide 2s reverse';
+                            }
+                            
+                            $d.style.animation = "blink .2s infinite";
+                            setTimeout(function () {$dt.style.display = 'block';}, 2000);
+                            setTimeout(function () {$d.style.transition = '1.5s'; $d.style.zIndex = '400'; $d.style.position = 'fixed'; $d.innerHTML = "<i>You Win!</i>"; $d.style.marginTop = '200px'; $dt.style.opacity = '0.7'}, 3000)
+                        }
+                        
+                        (getComputedStyle($tb[0]).backgroundImage.substr(-9, 7) == $arr_t[0] && getComputedStyle($tb[1]).backgroundImage.substr(-9, 7) == $arr_t[1] && getComputedStyle($tb[2]).backgroundImage.substr(-9, 7) == $arr_t[2] && getComputedStyle($tb[3]).backgroundImage.substr(-9, 7) == $arr_t[3] && getComputedStyle($tb[4]).backgroundImage.substr(-9, 7) == $arr_t[4] && getComputedStyle($tb[5]).backgroundImage.substr(-9, 7) == $arr_t[5] && getComputedStyle($tb[6]).backgroundImage.substr(-9, 7) == $arr_t[6] && getComputedStyle($tb[7]).backgroundImage.substr(-9, 7) == $arr_t[7] && getComputedStyle($tb[8]).backgroundImage.substr(-9, 7) == $arr_t[8] && getComputedStyle($tb[9]).backgroundImage.substr(-9, 7) == $arr_t[9] && getComputedStyle($tb[10]).backgroundImage.substr(-9, 7) == $arr_t[10] && getComputedStyle($tb[11]).backgroundImage.substr(-9, 7) == $arr_t[11] && getComputedStyle($tb[12]).backgroundImage.substr(-9, 7) == $arr_t[12] && getComputedStyle($tb[13]).backgroundImage.substr(-9, 7) == $arr_t[13] && getComputedStyle($tb[14]).backgroundImage.substr(-9, 7) == $arr_t[14] && getComputedStyle($tb[15]).backgroundImage.substr(-9, 7) == $arr_t[15]) ? win() : null
+                    }
+
+                    // dragleave
+                    function end(event) {
+                        event.preventDefault();
+                        event.target.style.outline = "";
+                        sessionStorage.clear();
+                    }
+                }
+            }
+
+            catch (error) {
+                console.log(error)
+            }
+        </script>
+        <!-- End Engine Code -->
+
+</section::game>
+<!-- Finish Game Building -->
